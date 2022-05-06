@@ -1,0 +1,78 @@
+<section class="container h-screen mx-auto flex">
+  <div class="flex-grow flex flex-col max-w-xl justify-center p-6">
+    <ng-template #digAnotherDiv>
+      <div>
+        <h1 class="text-6xl font-bold">Your secret text:</h1>
+        <div>
+          {{ secretText }}
+        </div>
+
+        <button
+          (click)="digAnother = !digAnother"
+          type="submit"
+          class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Dig another!!!
+        </button>
+      </div>
+    </ng-template>
+
+    <div *ngIf="!digAnother; else digAnotherDiv">
+      <h1 class="text-6xl font-bold">Unearth it!</h1>
+      <form [formGroup]="unEarthForm" (ngSubmit)="handleDig()">
+        <label class="block mt-6"> Code</label>
+        <input
+          class="w-full p-4 placeholder-gray-400 text-gray-700 bg-white text-lg border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-900"
+          type="text"
+          formControlName="code"
+        />
+
+        <div class="mt-6">
+          <button
+            type="submit"
+            class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Dig!!!
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="flex-grow flex flex-col max-w-xl justify-center p-6">
+    <ng-template #createAnotherDiv>
+      <div>
+        <h1 class="text-6xl font-bold">Your unearth code:</h1>
+        <h2 class="text-4xl font-bold">{{ unearthCode }}</h2>
+
+        <button
+          (click)="createAnother = !createAnother"
+          type="submit"
+          class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Bury another!!!
+        </button>
+      </div>
+    </ng-template>
+
+    <div *ngIf="!createAnother; else createAnotherDiv">
+      <h1 class="text-6xl font-bold">Burry it</h1>
+      <form [formGroup]="buryForm" (ngSubmit)="handleBury()">
+        <label class="block mt-6"> Text</label>
+        <textarea
+          class="w-full p-4 placeholder-gray-400 text-gray-700 bg-white text-lg border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-900"
+          formControlName="text"
+        ></textarea>
+
+        <div class="mt-6">
+          <button
+            type="submit"
+            class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Bury!!!
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

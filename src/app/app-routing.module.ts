@@ -5,14 +5,9 @@ import { LoginComponent } from './components/login/login.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { TodoComponent } from './components/todo/todo.component';
 import { AuthGuard } from './helpers/auth-guard.guard';
+import { MainComponent } from './components/main/main.component';
 
-const routes: Routes = [
-  { path: 'signup', component: SignupComponent},
-  { path: 'login', component: LoginComponent},
-  { path: 'todos', component: TodoComponent, canActivate: [AuthGuard] },
-  { path: '', component: LandingComponent },
-  { path: '**', component: LandingComponent },
-];
+const routes: Routes = [{ path: '', component: MainComponent }];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve  --host 0.0.0.0 ",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -25,6 +25,7 @@
     "@tailwindcss/typography": "^0.4.0",
     "angular-svg-icon": "^13.0.0",
     "appwrite": "^6.0.1",
+    "ngx-toastr": "^14.3.0",
     "rxjs": "^7.4.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

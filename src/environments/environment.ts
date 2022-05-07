@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   APP_ENDPOINT: 'http://localhost:8818/v1',
+  API_ENDPOINT: 'http://localhost:8080/v1',
   APP_PROJECT: '627547269fcbf5658551',
   APP_COLLECTION_ID: '62754731c4635af92550',
 };

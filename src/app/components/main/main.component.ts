@@ -15,7 +15,8 @@ export class MainComponent implements OnInit {
   digAnother = false;
   secretText = '';
 
-  appwrite: Appwrite;
+  realAppWrite: Appwrite;
+  pseudoAppWrite: Appwrite;
   db: any;
   constructor(private formBuilder: FormBuilder) {
     this.buryForm = this.formBuilder.group({
@@ -28,18 +29,33 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appwrite = new Appwrite();
-    this.appwrite
+    console.log('start....');
+    this.realAppWrite = new Appwrite();
+    console.log('start....0');
+
+    this.realAppWrite
       .setEndpoint(Server.endpoint)
       .setProject(Server.project)
       .setLocale('en-US');
+    this.pseudoAppWrite = new Appwrite();
+    this.pseudoAppWrite.setEndpoint(Server.apiEndpoint)
+      .setProject(Server.project)
+      .setLocale('en-US');
+
+    console.log('start....1');
 
     this.login();
   }
 
   private async login() {
-    if (!this.appwrite.account.get)
-      await this.appwrite.account.createAnonymousSession();
+    console.log('start....3');
+
+    const currentAccount = await this.realAppWrite.account.getSessions();
+    console.log('account is', currentAccount);
+    if (!currentAccount ) {
+      console.log('need to login');
+      await this.realAppWrite.account.createAnonymousSession();
+    }
   }
 
   handleDig() {
@@ -53,7 +69,7 @@ export class MainComponent implements OnInit {
   }
 
   async digText(code: string) {
-    return await this.appwrite.database.listDocuments(Server.collectionID, [
+    return await this.realAppWrite.database.listDocuments(Server.collectionID, [
       Query.equal('code', [parseInt(code)]),
     ]);
   }
@@ -67,8 +83,8 @@ export class MainComponent implements OnInit {
   }
 
   async buryText(text: string) {
-    const session = await this.appwrite.account.get();
-    return this.appwrite.database.createDocument(
+    const session = await this.realAppWrite.account.get();
+    return this.pseudoAppWrite.database.createDocument(
       Server.collectionID,
       'unique()',
       {

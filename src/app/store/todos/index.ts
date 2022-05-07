@@ -68,7 +68,6 @@ export class TodoState {
         todos: todos.documents,
       });
     } catch (e: any) {
-      console.log('Failed to fetch todos');
       dispatch(
         new GlobalActions.setAlert({
           message: e.message,
@@ -98,7 +97,6 @@ export class TodoState {
         todos: [...todos, todo],
       });
     } catch (e: any) {
-      console.log('Failed to add todo');
       dispatch(
         new GlobalActions.setAlert({
           message: e.message,
@@ -124,9 +122,7 @@ export class TodoState {
         write
       );
       let todoList = [...getState().todos];
-      const index = todoList.findIndex(
-        (todo) => todo.$id === updatedTodo.$id
-      );
+      const index = todoList.findIndex((todo) => todo.$id === updatedTodo.$id);
       if (index !== -1) {
         todoList[index] = updatedTodo;
         patchState({
@@ -134,7 +130,6 @@ export class TodoState {
         });
       }
     } catch (e: any) {
-      console.log('Failed to update todo');
       dispatch(
         new GlobalActions.setAlert({
           message: e.message,
@@ -162,7 +157,6 @@ export class TodoState {
         todos,
       });
     } catch (e: any) {
-      console.log('Failed to delete todo');
       dispatch(
         new GlobalActions.setAlert({
           message: e.message,

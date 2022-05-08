@@ -15,8 +15,7 @@ export class MainComponent implements OnInit {
   digAnother = false;
   secretText = '';
 
-  realAppWrite: Appwrite;
-  pseudoAppWrite: Appwrite;
+  appwriteInstance: Appwrite;
   db: any;
   constructor(private formBuilder: FormBuilder) {
     this.buryForm = this.formBuilder.group({
@@ -30,15 +29,11 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('start....');
-    this.realAppWrite = new Appwrite();
+    this.appwriteInstance = new Appwrite();
     console.log('start....0');
 
-    this.realAppWrite
-      .setEndpoint(Server.endpoint)
-      .setProject(Server.project)
-      .setLocale('en-US');
-    this.pseudoAppWrite = new Appwrite();
-    this.pseudoAppWrite.setEndpoint(Server.apiEndpoint)
+    this.appwriteInstance
+      .setEndpoint(Server.apiEndpoint)
       .setProject(Server.project)
       .setLocale('en-US');
 
@@ -49,19 +44,20 @@ export class MainComponent implements OnInit {
 
   private async login() {
     console.log('start....3');
-
-    const currentAccount = await this.realAppWrite.account.getSessions();
-    console.log('account is', currentAccount);
-    if (!currentAccount ) {
-      console.log('need to login');
-      await this.realAppWrite.account.createAnonymousSession();
+    try {
+      const currentAccount = await this.appwriteInstance.account.getSessions();
+    } catch (e) {
+      console.log('error', e);
+      await this.appwriteInstance.account.createAnonymousSession();
     }
+
+
   }
 
   handleDig() {
     const code = this.unEarthForm.value.code;
     this.digText(code).then((data: any) => {
-      console.log('data is, ', data);
+      data = JSON.parse(data.message);
       this.secretText = data.documents[0].text;
       this.digAnother = true;
       this.unEarthForm.reset();
@@ -69,7 +65,7 @@ export class MainComponent implements OnInit {
   }
 
   async digText(code: string) {
-    return await this.realAppWrite.database.listDocuments(Server.collectionID, [
+    return await this.appwriteInstance.database.listDocuments(Server.collectionID, [
       Query.equal('code', [parseInt(code)]),
     ]);
   }
@@ -83,12 +79,12 @@ export class MainComponent implements OnInit {
   }
 
   async buryText(text: string) {
-    const session = await this.realAppWrite.account.get();
-    return this.pseudoAppWrite.database.createDocument(
+    const session = await this.appwriteInstance.account.get();
+    return this.appwriteInstance.database.createDocument(
       Server.collectionID,
       'unique()',
       {
-        code: Math.round(Math.random() * 1000000),
+        code: '__CODE_PLACEHOLDER__',
         text: text,
       }
     );

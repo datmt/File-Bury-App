@@ -1,4 +1,10 @@
-<section class="container h-screen mx-auto flex">
+<section>
+    <button class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" (click)="isText = !isText">{{isText? 'Text' : 'Files'}}</button>
+  <hr>
+</section>
+
+<section class="container h-screen mx-auto flex" *ngIf="isText; else fileUpload">
+
   <div class="flex-grow flex flex-col max-w-xl justify-center p-6">
     <ng-template #digAnotherDiv>
       <div>
@@ -18,7 +24,7 @@
     </ng-template>
 
     <div *ngIf="!digAnother; else digAnotherDiv">
-      <h1 class="text-6xl font-bold">Unearth it!</h1>
+      <h1 class="text-6xl font-bold">Dig it!</h1>
       <form [formGroup]="unEarthForm" (ngSubmit)="handleDig()">
         <label class="block mt-6"> Code</label>
         <input
@@ -42,7 +48,7 @@
   <div class="flex-grow flex flex-col max-w-xl justify-center p-6">
     <ng-template #createAnotherDiv>
       <div>
-        <h1 class="text-6xl font-bold">Your unearth code:</h1>
+        <h1 class="text-6xl font-bold">Your dig code:</h1>
         <h2 class="text-4xl font-bold">{{ unearthCode }}</h2>
 
         <button
@@ -75,4 +81,37 @@
       </form>
     </div>
   </div>
+
+
+
 </section>
+
+
+<ng-template #fileUpload>
+  <section class="container h-screen mx-auto flex">
+    <div class="center">
+      <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" 
+      (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+            Optional custom content that replaces the the entire default content.
+            <button type="button" (click)="openFileSelector()">Browse Files</button>
+          </ng-template>
+      </ngx-file-drop>
+      <div class="upload-table">
+          <table class="table">
+              <thead>
+                  <tr>
+                      <th>Name</th>
+                  </tr>
+              </thead>
+              <tbody class="upload-name-style">
+                  <tr *ngFor="let item of files; let i=index">
+                      <td><strong>{{ item.relativePath }}</strong></td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+
+  </section>
+</ng-template>

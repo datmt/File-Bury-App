@@ -18,7 +18,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { environment } from 'src/environments/environment';
 import { MainComponent } from './components/main/main.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { NgxFileDropModule } from 'ngx-file-drop';
 import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
@@ -38,6 +38,7 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot(), // ToastrModule added
+    NgxFileDropModule,
     NgxsModule.forRoot(AppState, {
       developmentMode: !environment.production,
     }),

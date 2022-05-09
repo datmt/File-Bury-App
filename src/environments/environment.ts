@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  APP_ENDPOINT: 'http://localhost:8080/v1',
-  API_ENDPOINT: 'http://localhost:8080/v1',
+  APP_ENDPOINT: 'http://dev-exl2.ddns.net:40003/v1',
   APP_PROJECT: '62769eaceff5eede2899',
   APP_COLLECTION_ID: '62769ebbc91be4be9759',
+  APP_BUCKET_ID: '62789be4a26c09eac2d5',
 };
 
 /*

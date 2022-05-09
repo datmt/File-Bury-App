@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {Appwrite, AppwriteException, Query} from 'appwrite';
 import { Server } from '../../utils/config';
+import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -14,6 +16,7 @@ export class MainComponent implements OnInit {
   unearthCode = '';
   digAnother = false;
   secretText = '';
+  isText = true;
 
   appwriteInstance: Appwrite;
   db: any;
@@ -27,13 +30,76 @@ export class MainComponent implements OnInit {
     });
   }
 
+  public files: NgxFileDropEntry[] = [];
+
+  private upload(file: File, fileId: string) {
+    let promise = this.appwriteInstance
+    
+    .storage
+    
+    .createFile(Server.bucketId,fileId,   file)
+    .then(data => {
+      console.log('data ok', data);
+    })
+    .catch(err => {
+      console.log('error', err);
+    })
+
+  }
+
+  public dropped(files: NgxFileDropEntry[]) {
+    this.files = files;
+    for (const droppedFile of files) {
+
+      // Is it a file?
+      if (droppedFile.fileEntry.isFile) {
+        const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+        fileEntry.file((file: File) => {
+
+          // Here you can access the real file
+          console.log(droppedFile.relativePath, file);
+          this.upload(file, 'file' + Math.round(Math.random() * 100000));
+
+          /**
+          // You could upload it like this:
+          const formData = new FormData()
+          formData.append('logo', file, relativePath)
+
+          // Headers
+          const headers = new HttpHeaders({
+            'security-token': 'mytoken'
+          })
+
+          this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
+          .subscribe(data => {
+            // Sanitized logo returned from backend
+          })
+          **/
+
+        });
+      } else {
+        // It was a directory (empty directories are added, otherwise only files)
+        const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
+        console.log(droppedFile.relativePath, fileEntry);
+      }
+    }
+  }
+
+  public fileOver(event: any){
+    console.log(event);
+  }
+
+  public fileLeave(event: any){
+    console.log(event);
+  }
+
   ngOnInit(): void {
     console.log('start....');
     this.appwriteInstance = new Appwrite();
     console.log('start....0');
 
     this.appwriteInstance
-      .setEndpoint(Server.apiEndpoint)
+      .setEndpoint(Server.endpoint)
       .setProject(Server.project)
       .setLocale('en-US');
 

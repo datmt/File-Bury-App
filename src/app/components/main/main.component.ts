@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Appwrite, AppwriteException, Query} from 'appwrite';
-import { Server } from '../../utils/config';
-import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+import {Server} from '../../utils/config';
+import {NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry} from 'ngx-file-drop';
 
 @Component({
   selector: 'app-main',
@@ -12,14 +12,19 @@ import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 
 export class MainComponent implements OnInit {
   buryForm: FormGroup;
   unEarthForm: FormGroup;
+  digFileForm: FormGroup;
   createAnother = false;
+  createAnotherFile = false;
   unearthCode = '';
+  unearthFileCode = '';
   digAnother = false;
+  digAnotherFile = false;
   secretText = '';
   isText = true;
 
   appwriteInstance: Appwrite;
   db: any;
+
   constructor(private formBuilder: FormBuilder) {
     this.buryForm = this.formBuilder.group({
       text: ['', [Validators.required]],
@@ -28,26 +33,41 @@ export class MainComponent implements OnInit {
     this.unEarthForm = this.formBuilder.group({
       code: ['', [Validators.required]],
     });
+
+
+    this.digFileForm = this.formBuilder.group({
+      imageCode: ['', [Validators.required]],
+    });
   }
 
   public files: NgxFileDropEntry[] = [];
 
-  private upload(file: File, fileId: string) {
+  private upload(file: File) {
     let promise = this.appwriteInstance
-    
-    .storage
-    
-    .createFile(Server.bucketId,fileId,   file)
-    .then(data => {
-      console.log('data ok', data);
-    })
-    .catch(err => {
-      console.log('error', err);
-    })
+      .storage
+
+      .createFile(Server.bucketId, this.uuidv4(), file)
+      .then(data => {
+        console.log('data ok', data);
+        this.buryFile(data.$id)
+          .then((fileData: any) => {
+            this.unearthFileCode = fileData.code;
+            this.createAnotherFile = true;
+
+          });
+
+      })
+      .catch(err => {
+        console.log('error', err);
+      });
 
   }
 
   public dropped(files: NgxFileDropEntry[]) {
+    if (files.length > 1) {
+      alert('1 file only!');
+      return;
+    }
     this.files = files;
     for (const droppedFile of files) {
 
@@ -55,41 +75,21 @@ export class MainComponent implements OnInit {
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
-
-          // Here you can access the real file
-          console.log(droppedFile.relativePath, file);
-          this.upload(file, 'file' + Math.round(Math.random() * 100000));
-
-          /**
-          // You could upload it like this:
-          const formData = new FormData()
-          formData.append('logo', file, relativePath)
-
-          // Headers
-          const headers = new HttpHeaders({
-            'security-token': 'mytoken'
-          })
-
-          this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
-          .subscribe(data => {
-            // Sanitized logo returned from backend
-          })
-          **/
+          this.upload(file);
 
         });
       } else {
         // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log(droppedFile.relativePath, fileEntry);
       }
     }
   }
 
-  public fileOver(event: any){
+  public fileOver(event: any) {
     console.log(event);
   }
 
-  public fileLeave(event: any){
+  public fileLeave(event: any) {
     console.log(event);
   }
 
@@ -137,6 +137,22 @@ export class MainComponent implements OnInit {
     });
   }
 
+  handleDigFile() {
+    const code = this.digFileForm.value.imageCode;
+
+    this.digText(code).then((data: any) => {
+      data = JSON.parse(data.message);
+      const fileId = data.documents[0].file_id;
+      this.digFileForm.reset();
+      const result = this.appwriteInstance.storage.getFileDownload(Server.bucketId, fileId);
+      if (result && result.href) {
+        window.open(result.href, '_blank');
+      }
+    });
+
+
+  }
+
   async digText(code: string) {
     return await this.appwriteInstance.database.listDocuments(Server.collectionID, [
       Query.equal('code', [parseInt(code)]),
@@ -162,6 +178,30 @@ export class MainComponent implements OnInit {
         timestamp: '__TS_PLACEHOLDER__',
         is_text: true
       }
+    );
+  }
+
+  async buryFile(file_id: string) {
+    const session = await this.appwriteInstance.account.get();
+    return this.appwriteInstance.database.createDocument(
+      Server.collectionID,
+      'unique()',
+      {
+        code: '__CODE_PLACEHOLDER__',
+        text: '',
+        timestamp: '__TS_PLACEHOLDER__',
+        is_text: false,
+        file_id
+      }
+    );
+  }
+
+  private uuidv4(): string {
+
+    // @ts-ignore
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+      // tslint:disable-next-line:no-bitwise
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
   }
 }

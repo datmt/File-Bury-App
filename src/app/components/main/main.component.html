@@ -1,5 +1,7 @@
 <section>
-    <button class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" (click)="isText = !isText">{{isText? 'Text' : 'Files'}}</button>
+  <button
+    class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+    (click)="isText = !isText">{{isText ? 'Text' : 'Files'}}</button>
   <hr>
 </section>
 
@@ -83,35 +85,78 @@
   </div>
 
 
-
 </section>
 
 
 <ng-template #fileUpload>
   <section class="container h-screen mx-auto flex">
-    <div class="center">
-      <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" 
-      (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
-          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-            Optional custom content that replaces the the entire default content.
-            <button type="button" (click)="openFileSelector()">Browse Files</button>
-          </ng-template>
+    <div class="flex-grow flex flex-col max-w-xl justify-center p-6" >
+      <ngx-file-drop *ngIf="!createAnotherFile; else createAnotherFileDiv" dropZoneLabel="Drop one file here" (onFileDrop)="dropped($event)"
+                     (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+          Optional custom content that replaces the the entire default content.
+          <button type="button" (click)="openFileSelector()">Browse Files</button>
+        </ng-template>
       </ngx-file-drop>
-      <div class="upload-table">
-          <table class="table">
-              <thead>
-                  <tr>
-                      <th>Name</th>
-                  </tr>
-              </thead>
-              <tbody class="upload-name-style">
-                  <tr *ngFor="let item of files; let i=index">
-                      <td><strong>{{ item.relativePath }}</strong></td>
-                  </tr>
-              </tbody>
-          </table>
-      </div>
-  </div>
 
+
+      <ng-template #createAnotherFileDiv>
+        <div>
+          <h1 class="text-6xl font-bold">Your dig code:</h1>
+          <h2 class="text-4xl font-bold">{{ unearthFileCode }}</h2>
+
+          <button
+            (click)="createAnotherFile = !createAnotherFile"
+            type="submit"
+            class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Bury another!!!
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+
+
+
+    <div class="flex-grow flex flex-col max-w-xl justify-center p-6">
+      <ng-template #digAnotherFileDiv>
+        <div>
+          <h1 class="text-6xl font-bold">Your secret text:</h1>
+          <div>
+            {{ secretText }}
+          </div>
+
+          <button
+            (click)="digAnotherFile = !digAnotherFile"
+            type="submit"
+            class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Dig another image!!!
+          </button>
+        </div>
+      </ng-template>
+
+      <div *ngIf="!digAnotherFile; else digAnotherFileDiv">
+        <h1 class="text-6xl font-bold">Dig it!</h1>
+        <form [formGroup]="digFileForm" (ngSubmit)="handleDigFile()">
+          <label class="block mt-6"> Code</label>
+          <input
+            class="w-full p-4 placeholder-gray-400 text-gray-700 bg-white text-lg border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-900"
+            type="text"
+            formControlName="imageCode"
+          />
+
+          <div class="mt-6">
+            <button
+              type="submit"
+              class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Dig!!!
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </section>
 </ng-template>

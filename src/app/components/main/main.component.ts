@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Appwrite, Query } from 'appwrite';
+import {Appwrite, AppwriteException, Query} from 'appwrite';
 import { Server } from '../../utils/config';
 @Component({
   selector: 'app-main',
@@ -37,7 +37,6 @@ export class MainComponent implements OnInit {
       .setProject(Server.project)
       .setLocale('en-US');
 
-    console.log('start....1');
 
     this.login();
   }
@@ -46,6 +45,14 @@ export class MainComponent implements OnInit {
     console.log('start....3');
     try {
       const currentAccount = await this.appwriteInstance.account.getSessions();
+      console.log('current account', currentAccount);
+      // @ts-ignore
+      if (currentAccount?.message) {
+        // @ts-ignore
+        if (JSON.parse(currentAccount.message)?.code === 401) {
+          throw new Error('Invalid session');
+        }
+      }
     } catch (e) {
       console.log('error', e);
       await this.appwriteInstance.account.createAnonymousSession();
@@ -85,15 +92,10 @@ export class MainComponent implements OnInit {
       'unique()',
       {
         code: '__CODE_PLACEHOLDER__',
-        text: text,
+        text,
+        timestamp: '__TS_PLACEHOLDER__',
+        is_text: true
       }
     );
-  }
-
-  handleForm() {
-    // let payload = {
-    //   email: this.createTextForm.value.email,
-    //   password: this.createTextForm.value.password,
-    // };
   }
 }

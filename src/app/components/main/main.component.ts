@@ -48,7 +48,7 @@ export class MainComponent implements OnInit {
 
       .createFile(Server.bucketId, this.uuidv4(), file)
       .then(data => {
-        console.log('data ok', data);
+
         this.buryFile(data.$id)
           .then((fileData: any) => {
             this.unearthFileCode = fileData.code;
@@ -86,17 +86,15 @@ export class MainComponent implements OnInit {
   }
 
   public fileOver(event: any) {
-    console.log(event);
+
   }
 
   public fileLeave(event: any) {
-    console.log(event);
+
   }
 
   ngOnInit(): void {
-    console.log('start....');
     this.appwriteInstance = new Appwrite();
-    console.log('start....0');
 
     this.appwriteInstance
       .setEndpoint(Server.endpoint)
@@ -108,10 +106,8 @@ export class MainComponent implements OnInit {
   }
 
   private async login() {
-    console.log('start....3');
     try {
       const currentAccount = await this.appwriteInstance.account.getSessions();
-      console.log('current account', currentAccount);
       // @ts-ignore
       if (currentAccount?.message) {
         // @ts-ignore

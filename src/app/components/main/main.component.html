@@ -94,7 +94,7 @@
       <ngx-file-drop *ngIf="!createAnotherFile; else createAnotherFileDiv" dropZoneLabel="Drop one file here" (onFileDrop)="dropped($event)"
                      (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
         <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-          Optional custom content that replaces the the entire default content.
+          Drag file here to upload.
           <button type="button" (click)="openFileSelector()">Browse Files</button>
         </ng-template>
       </ngx-file-drop>

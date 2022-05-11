@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { Api } from './api';
+import {Injectable} from '@angular/core';
+import {CanActivate, Router} from '@angular/router';
+import {Api} from './api';
 
 @Injectable({
   providedIn: 'root',

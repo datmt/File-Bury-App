@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { Actions, Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { Account, Alert, GlobalState } from './store';
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {Actions, Select, Store} from '@ngxs/store';
 
 @Component({
   selector: 'app-root',
@@ -10,12 +8,9 @@ import { Account, Alert, GlobalState } from './store';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'todo-with-angular';
-
-  @Select(GlobalState.getAlert) alert: Observable<Alert>
+  title = 'file-route';
 
   constructor(private actions: Actions, private store: Store, private router: Router) {
-    this.store.dispatch(new Account.FetchAccount())
-    
+
   }
 }

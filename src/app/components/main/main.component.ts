@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Appwrite, AppwriteException, Query} from 'appwrite';
+import {Appwrite, Query} from 'appwrite';
 import {Server} from '../../utils/config';
-import {NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry} from 'ngx-file-drop';
+import {FileSystemDirectoryEntry, FileSystemFileEntry, NgxFileDropEntry} from 'ngx-file-drop';
 
 @Component({
   selector: 'app-main',

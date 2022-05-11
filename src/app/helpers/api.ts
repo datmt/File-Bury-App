@@ -1,5 +1,5 @@
-import { Appwrite } from 'appwrite';
-import { Server } from '../utils/config';
+import {Appwrite} from 'appwrite';
+import {Server} from '../utils/config';
 
 export class Api {
   private static sdk: Appwrite | null;

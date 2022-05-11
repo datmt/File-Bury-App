@@ -21,6 +21,7 @@ export class MainComponent implements OnInit {
   digAnotherFile = false;
   secretText = '';
   isText = true;
+  isLoading = false;
 
   appwriteInstance: Appwrite;
   db: any;
@@ -43,6 +44,7 @@ export class MainComponent implements OnInit {
   public files: NgxFileDropEntry[] = [];
 
   private upload(file: File) {
+    this.isLoading = true;
     let promise = this.appwriteInstance
       .storage
 
@@ -53,6 +55,7 @@ export class MainComponent implements OnInit {
           .then((fileData: any) => {
             this.unearthFileCode = fileData.code;
             this.createAnotherFile = true;
+            this.isLoading = false;
 
           });
 
@@ -124,25 +127,31 @@ export class MainComponent implements OnInit {
   }
 
   handleDig() {
+    this.isLoading = true;
     const code = this.unEarthForm.value.code;
     this.digText(code).then((data: any) => {
       data = JSON.parse(data.message);
       this.secretText = data.documents[0].text;
       this.digAnother = true;
       this.unEarthForm.reset();
+      this.isLoading = false;
     });
   }
 
   handleDigFile() {
     const code = this.digFileForm.value.imageCode;
+    this.isLoading = true;
 
     this.digText(code).then((data: any) => {
       data = JSON.parse(data.message);
       const fileId = data.documents[0].file_id;
       this.digFileForm.reset();
       const result = this.appwriteInstance.storage.getFileDownload(Server.bucketId, fileId);
+      this.isLoading = false;
       if (result && result.href) {
         window.open(result.href, '_blank');
+      } else {
+        alert('file does not exist');
       }
     });
 
@@ -156,10 +165,12 @@ export class MainComponent implements OnInit {
   }
 
   handleBury() {
+    this.isLoading = true;
     this.buryText(this.buryForm.value.text).then((data: any) => {
       this.createAnother = true;
       this.unearthCode = data.code;
       this.buryForm.reset();
+      this.isLoading = false;
     });
   }
 

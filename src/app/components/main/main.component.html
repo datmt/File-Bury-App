@@ -1,8 +1,20 @@
 <section>
   <button
     class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-    (click)="isText = !isText">{{isText ? 'Text' : 'Files'}}</button>
+    (click)="isText = !isText">{{isText ? 'File' : 'Text'}}</button>
+
+  <div class="lds-roller" *ngIf="isLoading">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
   <hr>
+
 </section>
 
 <section class="container h-screen mx-auto flex" *ngIf="isText; else fileUpload">
@@ -90,8 +102,9 @@
 
 <ng-template #fileUpload>
   <section class="container h-screen mx-auto flex">
-    <div class="flex-grow flex flex-col max-w-xl justify-center p-6" >
-      <ngx-file-drop *ngIf="!createAnotherFile; else createAnotherFileDiv" dropZoneLabel="Drop one file here" (onFileDrop)="dropped($event)"
+    <div class="flex-grow flex flex-col max-w-xl justify-center p-6">
+      <ngx-file-drop *ngIf="!createAnotherFile; else createAnotherFileDiv" dropZoneLabel="Drop one file here"
+                     (onFileDrop)="dropped($event)"
                      (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
         <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
           Drag file here to upload.
@@ -115,8 +128,6 @@
         </div>
       </ng-template>
     </div>
-
-
 
 
     <div class="flex-grow flex flex-col max-w-xl justify-center p-6">
